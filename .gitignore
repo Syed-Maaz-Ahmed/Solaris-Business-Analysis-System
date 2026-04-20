@@ -1,0 +1,7 @@
+bin/
+*.class
+.DS_Store
+Thumbs.db
+*.log
+inventory.txt
+orders_v2.txt
