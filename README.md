@@ -33,6 +33,3 @@ Solaris is a professional-grade business management dashboard designed for high-
    javac -d bin src/*.java
    java -cp bin SolarisEnergyBackend
    ```
-
----
-**Designed by Antigravity // Solaris Elite Design Standard 7.0**
