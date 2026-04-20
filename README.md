@@ -3,7 +3,7 @@
 
 Solaris is a professional-grade business management dashboard designed for high-stakes energy infrastructure deployment. It combines complex algorithmic logic (DSA) with a "Crystalline" Glassmorphic UI to provide a surgical view of global operations.
 
-![Solaris Dashboard](https://github.com/placeholder_for_actual_screenshot.png)
+![Solaris Dashboard](./dashboard.png)
 
 ## 🛠 Key Architecture
 *   **Inventory Stack Engine**: Utilizes a `Stack`-based logic to monitor and prioritize critical asset deficits.
