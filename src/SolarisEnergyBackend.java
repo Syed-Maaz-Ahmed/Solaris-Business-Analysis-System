@@ -91,18 +91,18 @@ class RevenueQueue {
 
     public RevenueQueue() { load(); }
 
-    public void createOrder(String asset, int qty, double price, String location, String client) {
-        active.add(new DeploymentOrder(nextId++, asset, qty, LocalDateTime.now(), "Pending", qty * price, location, client));
+    public void createOrder(InventoryManager inv, String asset, int qty, double price, String location, String client) {
+        EnergyAsset a = inv.find(asset);
+        if(a != null && a.getQuantity() >= qty) {
+            a.setQuantity(a.getQuantity() - qty);
+            active.add(new DeploymentOrder(nextId++, asset, qty, LocalDateTime.now(), "Pending", qty * price, location, client));
+            inv.save();
+        }
     }
 
-    public DeploymentOrder process(InventoryManager inv) {
+    public DeploymentOrder process() {
         DeploymentOrder o = active.poll();
         if(o != null) {
-            EnergyAsset a = inv.find(o.getAssetName());
-            if(a != null) {
-                a.setQuantity(a.getQuantity() - o.getQuantity());
-                inv.save();
-            }
             o.setStatus("Deployed");
             history.add(o);
             totalGlobalRevenue += o.getTotalRevenue();
@@ -153,7 +153,7 @@ public class SolarisEnergyBackend {
     public SolarisEnergyBackend() { inv.load(); }
     public InventoryManager getInventory() { return inv; }
     public RevenueQueue getRequests() { return req; }
-    public void processAll() { req.process(inv); }
+    public void processAll() { while(req.process() != null); }
     public void save() { inv.save(); req.save(); }
 
     public static void main(String[] args) { SolarisEnergyGUI.main(args); }

@@ -38,6 +38,7 @@ public class SolarisEnergyGUI extends JFrame {
         
         JPanel root = new JPanel(new BorderLayout()) {
             @Override protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D)g.create();
                 g2.setPaint(new GradientPaint(0,0, CLR_VOID, getWidth(), getHeight(), new Color(15, 22, 38)));
                 g2.fillRect(0,0,getWidth(),getHeight()); g2.dispose();
@@ -119,13 +120,13 @@ public class SolarisEnergyGUI extends JFrame {
         }
         public void setActive(boolean a) { this.active = a; setForeground(a?TXT_PRI:TXT_DARK); repaint(); }
         @Override protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
             if(active) {
                 Graphics2D g2 = (Graphics2D)g.create(); g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(new Color(255, 255, 255, 12)); g2.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
                 int indH = (int)(getHeight() * 0.75); int indY = (getHeight() - indH) / 2;
                 g2.setColor(ACC_GREEN); g2.fillRoundRect(0, indY, 6, indH, 6, 6); g2.dispose();
             }
-            super.paintComponent(g);
         }
     }
 
@@ -170,13 +171,19 @@ public class SolarisEnergyGUI extends JFrame {
     }
 
     private JPanel pageOrd() {
-        JPanel p = new JPanel(new BorderLayout(0, 40)); p.setOpaque(false);
+        JPanel p = new JPanel(new BorderLayout(0, 45)); p.setOpaque(false);
         p.add(topHead("Mission Dispatch", "Active hardware deployment logistics track"), BorderLayout.NORTH);
+        
         mP = new DefaultTableModel(new String[]{"ID", "CLIENT NAME", "LOCATION SITE", "STATUS", "REVENUE"}, 0);
-        JTable table = buildTable(mP, new int[]{100, 300, 300, 150, 150}); p.add(wrapTable(table), BorderLayout.CENTER);
+        JTable table = buildTable(mP, new int[]{100, 300, 300, 150, 150});
+        p.add(wrapTable(table), BorderLayout.CENTER);
+        
         JPanel b = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0)); b.setOpaque(false);
-        b.add(styledBtn("INITIATE MISSION", ACC_GREEN, e -> addOrd())); b.add(styledBtn("EXECUTE DISPATCH", ACC_CYAN, e -> disp()));
-        p.add(b, BorderLayout.SOUTH); return p;
+        b.add(styledBtn("INITIATE MISSION", ACC_GREEN, e -> addOrd())); 
+        b.add(styledBtn("EXECUTE DISPATCH", ACC_CYAN, e -> disp()));
+        
+        p.add(b, BorderLayout.SOUTH); 
+        return p;
     }
 
     private JPanel pageRev() {
@@ -209,6 +216,7 @@ public class SolarisEnergyGUI extends JFrame {
                 JLabel t = new JLabel("GRID STABLE // NO ACTIVE DEFICITS"); t.setForeground(ACC_GREEN); t.setFont(new Font("Segoe UI", Font.BOLD, 14)); e.add(t); alertRack.add(e);
             }
             alertRack.revalidate(); alertRack.repaint();
+            mainArea.revalidate(); mainArea.repaint();
         }
     }
 
@@ -249,6 +257,7 @@ public class SolarisEnergyGUI extends JFrame {
 
     private class GlassBox extends JPanel {
         @Override protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
             Graphics2D g2 = (Graphics2D)g.create(); g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(CLR_GLASS); g2.fillRoundRect(0,0,getWidth(),getHeight(),24,24);
             g2.setColor(BRD_COL); g2.drawRoundRect(0,0,getWidth()-1,getHeight()-1,24,24); g2.dispose();
@@ -275,7 +284,17 @@ public class SolarisEnergyGUI extends JFrame {
         return t;
     }
 
-    private JPanel wrapTable(JTable t) { JScrollPane s = new JScrollPane(t); s.setOpaque(false); s.getViewport().setOpaque(false); s.setBorder(null); JPanel g = new GlassBox(); g.setLayout(new BorderLayout()); g.add(s); return g; }
+    private JPanel wrapTable(JTable t) { 
+        JScrollPane s = new JScrollPane(t); 
+        s.setOpaque(false); 
+        s.getViewport().setOpaque(false); 
+        s.setBorder(null); 
+        
+        JPanel g = new GlassBox(); 
+        g.setLayout(new BorderLayout()); 
+        g.add(s, BorderLayout.CENTER); 
+        return g; 
+    }
 
     private class TrendPlot extends GlassBox {
         private List<Double> d = new ArrayList<>();
@@ -346,6 +365,7 @@ public class SolarisEnergyGUI extends JFrame {
                     g2.setColor(ACC_CYAN); g2.drawRoundRect(0,0,getWidth()-1,getHeight()-1,24,24); g2.dispose();
                 }
             };
+            main.setOpaque(false);
             main.setBorder(new EmptyBorder(30, 30, 30, 30));
             
             JLabel head = new JLabel(title.toUpperCase()); head.setFont(new Font("Segoe UI", Font.BOLD, 18)); head.setForeground(ACC_CYAN); head.setBorder(new EmptyBorder(0,0,20,0));
@@ -372,17 +392,49 @@ public class SolarisEnergyGUI extends JFrame {
 
     private void addOrd() {
         JPanel p = new JPanel(new GridLayout(4, 2, 10, 15)); p.setOpaque(false);
-        JComboBox<String> cb = new JComboBox<>(); for(EnergyAsset a : backend.getInventory().getItems()) cb.addItem(a.getName());
+        JComboBox<String> cb = new JComboBox<>(); 
+        for(EnergyAsset a : backend.getInventory().getItems()) cb.addItem(a.getName());
+        
+        cb.setOpaque(false);
+        cb.setBackground(new Color(255, 255, 255, 12));
+        cb.setForeground(Color.WHITE);
+        cb.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        cb.setBorder(new CompoundBorder(new LineBorder(BRD_COL, 1, true), new EmptyBorder(8, 10, 8, 10)));
+        
         JTextField c = field(), l = field(), q = field();
         p.add(lbl("Select Asset:")); p.add(cb); p.add(lbl("Client Name:")); p.add(c); p.add(lbl("Mission Site:")); p.add(l); p.add(lbl("Unit Qty:")); p.add(q);
         GlassPortal gp = new GlassPortal("Mission Registry", p); gp.setVisible(true);
         if(!"CANCELLED".equals(p.getName()) && !c.getText().isEmpty()) {
             EnergyAsset a = backend.getInventory().find((String)cb.getSelectedItem());
-            backend.getRequests().createOrder(a.getName(), Integer.parseInt(q.getText()), a.getPrice(), l.getText(), c.getText()); backend.save(); sync();
+            int requestedQty = Integer.parseInt(q.getText());
+            if(a.getQuantity() >= requestedQty) {
+                backend.getRequests().createOrder(backend.getInventory(), a.getName(), requestedQty, a.getPrice(), l.getText(), c.getText()); 
+                backend.save(); sync();
+            } else {
+                JOptionPane.showMessageDialog(this, "INSUFFICIENT STOCK: Only " + (int)a.getQuantity() + " units available.", "GRID ERROR", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
-    private JTextField field() { JTextField f = new JTextField(); f.setBackground(new Color(255,255,255,10)); f.setForeground(Color.WHITE); f.setCaretColor(Color.WHITE); f.setBorder(new CompoundBorder(new LineBorder(BRD_COL), new EmptyBorder(5,10,5,10))); return f; }
+    private JTextField field() {
+        JTextField f = new JTextField() {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D)g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        f.setOpaque(false);
+        f.setBackground(new Color(255, 255, 255, 12));
+        f.setForeground(Color.WHITE);
+        f.setCaretColor(Color.WHITE);
+        f.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        f.setBorder(new CompoundBorder(new LineBorder(BRD_COL, 1, true), new EmptyBorder(10, 15, 10, 15)));
+        return f;
+    }
     private JLabel lbl(String t) { JLabel l = new JLabel(t); l.setForeground(TXT_DARK); l.setFont(new Font("Segoe UI", Font.BOLD, 12)); return l; }
     private void disp() { backend.processAll(); backend.save(); sync(); }
 
