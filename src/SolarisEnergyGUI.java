@@ -145,7 +145,8 @@ public class SolarisEnergyGUI extends JFrame {
     private JPanel legendRack;
 
     private JPanel pageDash() {
-        JPanel p = new JPanel(new BorderLayout(0, 50)); p.setOpaque(false);
+        JPanel p = new JPanel(new BorderLayout(0, 50)); 
+        p.setBackground(new Color(15, 22, 40)); p.setOpaque(true);
         p.add(topHead("Grid Logistics", "Real-time energy distribution & mission telemetry"), BorderLayout.NORTH);
         JPanel mid = new JPanel(new GridLayout(1, 2, 45, 0)); mid.setOpaque(false);
         c1 = new StatBox("CUMULATIVE REVENUE", "$0.00", ACC_GREEN);
@@ -162,7 +163,8 @@ public class SolarisEnergyGUI extends JFrame {
     }
 
     private JPanel pageInv() {
-        JPanel p = new JPanel(new BorderLayout(0, 40)); p.setOpaque(false);
+        JPanel p = new JPanel(new BorderLayout(0, 40)); 
+        p.setBackground(new Color(15, 22, 40)); p.setOpaque(true);
         p.add(topHead("Hardware Hub", "Central unit storage and valuation matrix"), BorderLayout.NORTH);
         JPanel m = new JPanel(new BorderLayout(45,0)); m.setOpaque(false);
         mI = new DefaultTableModel(new String[]{"ITEM DESIGNATION", "VALUATION", "STOCK LEVEL"}, 0);
@@ -178,7 +180,8 @@ public class SolarisEnergyGUI extends JFrame {
     }
 
     private JPanel pageOrd() {
-        JPanel p = new JPanel(new BorderLayout(0, 45)); p.setOpaque(false);
+        JPanel p = new JPanel(new BorderLayout(0, 45)); 
+        p.setBackground(new Color(15, 22, 40)); p.setOpaque(true);
         p.add(topHead("Mission Dispatch", "Active hardware deployment logistics track"), BorderLayout.NORTH);
         
         mP = new DefaultTableModel(new String[]{"ID", "CLIENT NAME", "LOCATION SITE", "STATUS", "REVENUE"}, 0);
@@ -194,7 +197,8 @@ public class SolarisEnergyGUI extends JFrame {
     }
 
     private JPanel pageRev() {
-        JPanel p = new JPanel(new BorderLayout(0, 40)); p.setOpaque(false);
+        JPanel p = new JPanel(new BorderLayout(0, 40)); 
+        p.setBackground(new Color(15, 22, 40)); p.setOpaque(true);
         p.add(topHead("Revenue Stream", "Enterprise mission performance analytics"), BorderLayout.NORTH);
         plot = new TrendPlot(); p.add(plot, BorderLayout.CENTER);
         mS = new DefaultTableModel(new String[]{"ID", "CLIENT NAME", "MODEL", "FINAL VALUE", "TIMESTAMP"}, 0);
@@ -284,7 +288,7 @@ public class SolarisEnergyGUI extends JFrame {
             @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-                if (!isSelected) setBackground(row % 2 == 0 ? new Color(0,0,0,0) : new Color(255,255,255,4));
+                if (!isSelected) setBackground(row % 2 == 0 ? new Color(20, 28, 48) : new Color(25, 33, 53));
                 return c;
             }
         });
