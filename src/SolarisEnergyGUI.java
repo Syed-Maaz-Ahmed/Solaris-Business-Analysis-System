@@ -49,8 +49,15 @@ public class SolarisEnergyGUI extends JFrame {
         add(createSidebar(), BorderLayout.WEST);
 
         flow = new CardLayout();
-        mainArea = new JPanel(flow);
-        mainArea.setOpaque(false);
+        mainArea = new JPanel(flow) {
+            @Override protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D)g.create();
+                g2.setPaint(new GradientPaint(0,0, CLR_VOID, getWidth(), getHeight(), new Color(15, 22, 38)));
+                g2.fillRect(0,0,getWidth(),getHeight()); g2.dispose();
+            }
+        };
+        mainArea.setOpaque(true);
         mainArea.setBorder(new EmptyBorder(50, 65, 50, 65));
 
         mainArea.add(pageDash(), "dashboard");
@@ -287,7 +294,8 @@ public class SolarisEnergyGUI extends JFrame {
     private JPanel wrapTable(JTable t) { 
         JScrollPane s = new JScrollPane(t); 
         s.setOpaque(false); 
-        s.getViewport().setOpaque(false); 
+        s.getViewport().setOpaque(true); 
+        s.getViewport().setBackground(new Color(15, 22, 38)); 
         s.setBorder(null); 
         
         JPanel g = new GlassBox(); 
