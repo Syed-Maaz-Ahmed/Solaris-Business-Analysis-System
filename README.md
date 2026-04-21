@@ -24,15 +24,9 @@ Solaris is a professional-grade business management dashboard designed for high-
 *   **Financial Stream**: Historical performance analytics with high-precision Line-Chart plotting.
 
 ## 🔧 Installation
-1. Clone the repository:
-   ```bash
-   git clone [YOUR_REPOSITORY_URL]
-   ```
+
 2. Compile and Run:
    ```bash
    javac -d bin src/*.java
    java -cp bin SolarisEnergyBackend
    ```
-
----
-**Designed by Antigravity // Solaris Elite Design Standard 7.0**
