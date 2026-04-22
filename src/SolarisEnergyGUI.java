@@ -277,7 +277,13 @@ public class SolarisEnergyGUI extends JFrame {
     }
 
     private JTable buildTable(DefaultTableModel m, int[] w) {
-        JTable t = new JTable(m); t.setBackground(new Color(0,0,0,0)); t.setForeground(TXT_PRI); t.setRowHeight(65);
+        JTable t = new JTable(m) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        t.setBackground(new Color(0,0,0,0)); t.setForeground(TXT_PRI); t.setRowHeight(65);
         t.getTableHeader().setBackground(new Color(0,0,0,0)); t.getTableHeader().setForeground(TXT_DARK);
         t.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         t.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 13));
@@ -411,6 +417,16 @@ public class SolarisEnergyGUI extends JFrame {
         cb.setBackground(new Color(255, 255, 255, 12));
         cb.setForeground(Color.WHITE);
         cb.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        cb.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                c.setBackground(isSelected ? ACC_CYAN : new Color(20, 28, 48));
+                c.setForeground(isSelected ? CLR_VOID : Color.WHITE);
+                c.setBorder(new EmptyBorder(8, 12, 8, 12));
+                return c;
+            }
+        });
         cb.setBorder(new CompoundBorder(new LineBorder(BRD_COL, 1, true), new EmptyBorder(8, 10, 8, 10)));
         
         JTextField c = field(), l = field(), q = field();
