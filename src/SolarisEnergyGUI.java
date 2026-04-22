@@ -174,7 +174,8 @@ public class SolarisEnergyGUI extends JFrame {
         legendRack = new JPanel(); legendRack.setOpaque(false); legendRack.setLayout(new BoxLayout(legendRack, BoxLayout.Y_AXIS));
         sid.add(legendRack, BorderLayout.CENTER); m.add(sid, BorderLayout.EAST);
         p.add(m, BorderLayout.CENTER);
-        JPanel b = new JPanel(new FlowLayout(FlowLayout.RIGHT)); b.setOpaque(false);
+        JPanel b = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0)); b.setOpaque(false);
+        b.add(styledBtn("UPDATE STOCK", ACC_CYAN, e -> updateInv()));
         b.add(styledBtn("+ ADD REQUISITION", ACC_GREEN, e -> addInv())); p.add(b, BorderLayout.SOUTH);
         return p;
     }
@@ -410,9 +411,41 @@ public class SolarisEnergyGUI extends JFrame {
 
     private void addOrd() {
         JPanel p = new JPanel(new GridLayout(4, 2, 10, 15)); p.setOpaque(false);
-        JComboBox<String> cb = new JComboBox<>(); 
+        JComboBox<String> cb = combo(); 
         for(EnergyAsset a : backend.getInventory().getItems()) cb.addItem(a.getName());
         
+        JTextField c = field(), l = field(), q = field();
+        p.add(lbl("Select Asset:")); p.add(cb); p.add(lbl("Client Name:")); p.add(c); p.add(lbl("Mission Site:")); p.add(l); p.add(lbl("Unit Qty:")); p.add(q);
+        GlassPortal gp = new GlassPortal("Mission Registry", p); gp.setVisible(true);
+        if(!"CANCELLED".equals(p.getName()) && !c.getText().isEmpty()) {
+            EnergyAsset a = backend.getInventory().find((String)cb.getSelectedItem());
+            int requestedQty = Integer.parseInt(q.getText());
+            if(a.getQuantity() >= requestedQty) {
+                backend.getRequests().createOrder(backend.getInventory(), a.getName(), requestedQty, a.getPrice(), l.getText(), c.getText()); 
+                backend.save(); sync();
+            } else {
+                JOptionPane.showMessageDialog(this, "INSUFFICIENT STOCK: Only " + (int)a.getQuantity() + " units available.", "GRID ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void updateInv() {
+        JPanel p = new JPanel(new GridLayout(2, 2, 10, 15)); p.setOpaque(false);
+        JComboBox<String> cb = combo();
+        for(EnergyAsset a : backend.getInventory().getItems()) cb.addItem(a.getName());
+        JTextField q = field();
+        p.add(lbl("Select Asset:")); p.add(cb); p.add(lbl("Add Quantity:")); p.add(q);
+        GlassPortal gp = new GlassPortal("Replenish Stock", p); gp.setVisible(true);
+        if(!"CANCELLED".equals(p.getName()) && cb.getSelectedItem() != null) {
+            try {
+                backend.getInventory().addStock((String)cb.getSelectedItem(), Double.parseDouble(q.getText()));
+                backend.save(); sync();
+            } catch(Exception ex) {}
+        }
+    }
+
+    private JComboBox<String> combo() {
+        JComboBox<String> cb = new JComboBox<>();
         cb.setOpaque(false);
         cb.setBackground(new Color(255, 255, 255, 12));
         cb.setForeground(Color.WHITE);
@@ -428,20 +461,7 @@ public class SolarisEnergyGUI extends JFrame {
             }
         });
         cb.setBorder(new CompoundBorder(new LineBorder(BRD_COL, 1, true), new EmptyBorder(8, 10, 8, 10)));
-        
-        JTextField c = field(), l = field(), q = field();
-        p.add(lbl("Select Asset:")); p.add(cb); p.add(lbl("Client Name:")); p.add(c); p.add(lbl("Mission Site:")); p.add(l); p.add(lbl("Unit Qty:")); p.add(q);
-        GlassPortal gp = new GlassPortal("Mission Registry", p); gp.setVisible(true);
-        if(!"CANCELLED".equals(p.getName()) && !c.getText().isEmpty()) {
-            EnergyAsset a = backend.getInventory().find((String)cb.getSelectedItem());
-            int requestedQty = Integer.parseInt(q.getText());
-            if(a.getQuantity() >= requestedQty) {
-                backend.getRequests().createOrder(backend.getInventory(), a.getName(), requestedQty, a.getPrice(), l.getText(), c.getText()); 
-                backend.save(); sync();
-            } else {
-                JOptionPane.showMessageDialog(this, "INSUFFICIENT STOCK: Only " + (int)a.getQuantity() + " units available.", "GRID ERROR", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+        return cb;
     }
 
     private JTextField field() {

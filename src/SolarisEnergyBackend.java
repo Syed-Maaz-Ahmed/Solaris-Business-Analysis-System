@@ -53,6 +53,11 @@ class InventoryManager {
     
     public void add(String n, double p, double q) { items.add(new EnergyAsset(n, p, q)); }
     
+    public void addStock(String name, double qty) {
+        EnergyAsset a = find(name);
+        if (a != null) a.setQuantity(a.getQuantity() + qty);
+    }
+    
     public void load() {
         File f = new File("inventory.txt"); if(!f.exists()) return;
         try (Scanner sc = new Scanner(f)) {
